@@ -17,8 +17,10 @@ VERSION="$1"
 shift
 
 if [ -z "${REPOSITORY_URL}" -o -z "${REPOSITORY_ID}" ] ; then
-  REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+  #REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
   REPOSITORY_ID="sonatype-nexus-staging"
+  REPOSITORY_URL="ftp://ftp.cluster013.ovh.net/maven/releases"
+  #REPOSITORY_ID="jzy3d-ftp"
   # REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
   # REPOSITORY_ID="jogamp-test-mirror"
   # REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
@@ -58,7 +60,9 @@ do
 done
 
 # Deploy everything.
-mvn gpg:sign-and-deploy-file            \
+#mvn gpg:sign-and-deploy-file            \
+mvn deploy  -e      -Dgpg.skip=true -DaltDeploymentRepository=releaseRepository::default::ftp://USER:PASSWORD@ftp.cluster013.ovh.net/maven/releases    \
+#mvn install:install-file    \
   "-DpomFile=pom.xml"                   \
   "-Dfile=${NAME}.jar"                  \
   "-Dfiles=${DEPLOY_FILES}"             \
@@ -66,4 +70,3 @@ mvn gpg:sign-and-deploy-file            \
   "-Dtypes=${DEPLOY_TYPES}"             \
   "-Durl=${REPOSITORY_URL}"             \
   "-DrepositoryId=${REPOSITORY_ID}"
-
